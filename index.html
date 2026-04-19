@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Confession Letter 💌</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+  overflow: hidden;
+  height: 100vh;
+  animation: sceneReveal 2s ease-out;
+}
+
+@keyframes sceneReveal {
+  from { opacity: 0; filter: brightness(0.8); }
+  to { opacity: 1; filter: brightness(1); }
+}
+
+/* 🌌 BACKGROUND LAYER - Depth layers */
+.bg-particle {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.bg-particle.slow {
+  animation: floatUpSlow linear infinite;
+}
+
+.bg-particle.medium {
+  animation: floatUpMedium linear infinite;
+}
+
+.bg-particle.fast {
+  animation: floatUpFast linear infinite;
+}
+
+@keyframes floatUpSlow {
+  0% { transform: translateY(100vh) scale(1); opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+@keyframes floatUpMedium {
+  0% { transform: translateY(100vh) scale(1); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+@keyframes floatUpFast {
+  0% { transform: translateY(100vh) scale(1); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+}
+
+/* 🧊 GLASS CARD + Glow pulse */
+.question {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(12px) saturate(180%);
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.4);
+  text-align: center;
+  animation: fadeIn 1.5s ease, glowPulse 3s ease-in-out infinite 2s;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+  50% { box-shadow: 0 15px 45px rgba(255,107,129,0.2); }
+}
+
+/* fade intro */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* BUTTONS */
+button {
+  padding: 12px 22px;
+  margin: 10px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* ❤️ YES heartbeat + glow */
+.yes {
+  background: #ff6b81;
+  color: white;
+  animation: heartbeat 1.2s infinite, yesGlow 2s ease-in-out infinite;
+  transform-origin: center;
+  box-shadow: 0 0 20px rgba(255, 107, 129, 0.5);
+  font-weight: 600;
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes yesGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 129, 0.5); }
+  50% { box-shadow: 0 0 35px rgba(255, 107, 129, 0.8); }
+}
+
+/* NO button - Storybook escape */
+.no {
+  background: #ddd;
+  position: relative;
+  transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.no.escaping {
+  animation: storyEscape 1.2s ease-in forwards;
+}
+
+@keyframes storyEscape {
+  0% { opacity: 1; transform: scale(1) translateX(0); }
+  100% { opacity: 0; transform: scale(0.2) translateX(-200px) rotateZ(-45deg); }
+}
+
+/* ENVELOPE - Anticipation zoom-in */
+.envelope {
+  width: 280px;
+  height: 170px;
+  position: relative;
+  cursor: pointer;
+  animation: envelopeZoomIn 1.8s cubic-bezier(0.34, 1.56, 0.64, 1), envelopeBounce 0.8s ease-in-out 2s;
+}
+
+@keyframes envelopeZoomIn {
+  0% { opacity: 0; transform: scale(0.3) translateY(50px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes envelopeBounce {
+  0%, 100% { transform: scale(1) rotateZ(0deg); }
+  25% { transform: scale(1.05) rotateZ(-2deg); }
+  50% { transform: scale(1.1) rotateZ(2deg); }
+  75% { transform: scale(1.05) rotateZ(-1deg); }
+}
+
+.body {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* ✉️ wax seal */
+.seal {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #ff6b81;
+  border-radius: 50%;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.6s;
+}
+
+/* broken seal */
+.envelope.open .seal {
+  transform: translate(-50%, -50%) scale(0) rotate(180deg);
+  opacity: 0;
+}
+
+/* flap */
+.flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ff6b81;
+  clip-path: polygon(0 0, 50% 55%, 100% 0);
+  transition: 0.6s;
+}
+
+.envelope.open .flap {
+  transform: rotateX(-160deg);
+}
+
+/* POPUP */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s;
+}
+
+.overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.letter-popup {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(15px) saturate(180%);
+  border-radius: 18px;
+  padding: 15px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.4);
+  animation: letterSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+
+@keyframes letterSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ✨ floating shadow with emotional glow */
+.question {
+  animation: fadeIn 1.5s ease, glowPulse 3s ease-in-out infinite 2s, floatCard 4s ease-in-out infinite;
+}
+
+.letter-popup {
+  animation: letterSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.message {
+  white-space: pre-wrap;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-y: auto;
+  padding: 15px 10px;
+  flex: 1;
+}
+
+/* Custom scrollbar */
+.message::-webkit-scrollbar {
+  width: 6px;
+}
+
+.message::-webkit-scrollbar-track {
+  background: rgba(255, 107, 129, 0.1);
+  border-radius: 10px;
+}
+
+.message::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 129, 0.5);
+  border-radius: 10px;
+}
+
+.message::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 129, 0.7);
+}
+
+.hidden { display: none; }
+
+/* particle types */
+.particle {
+  position: absolute;
+  pointer-events: none;
+  animation: rise linear forwards;
+}
+
+@keyframes rise {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(-200px) scale(1.8); opacity: 0; }
+}
+
+/* CONFETTI */
+.confetti {
+  position: fixed;
+  pointer-events: none;
+  font-size: 24px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  from {
+    transform: translateY(0) rotateZ(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100vh) rotateZ(360deg);
+    opacity: 0;
+  }
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.2);
+}
+
+/* mobile fix */
+@media (max-width: 600px) {
+  .question, .letter-popup {
+    width: 85%;
+    padding: 20px;
+  }
+  
+  .envelope {
+    width: 240px;
+    height: 145px;
+  }
+  
+  button {
+    padding: 10px 18px;
+    margin: 8px;
+    font-size: 14px;
+  }
+  
+  .yes {
+    font-size: 16px;
+  }
+  
+  .no {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="bg"></div>
+
+<div id="home" class="container">
+  <div class="question">
+    <h2>📩 You have a new mail 😮❗</h2>
+    <p>Would you like to open it?</p>
+    <button class="yes" id="yesBtn" onclick="showEnvelope()">Yes 😁</button>
+    <button class="no" id="noBtn" onclick="moveNo()">No 💔</button>
+  </div>
+</div>
+
+<div id="envelopeSection" class="container hidden">
+  <div class="envelope" id="envelope" onclick="openEnvelope()">
+    <div class="flap"></div>
+    <div class="seal"></div>
+    <div class="body"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="letter-popup">
+    <button class="close-btn" onclick="closeLetter()">✕</button>
+    <div class="message" id="typedText"></div>
+  </div>
+</div>
+
+<script>
+let yesScale = 1;
+let noX = 0, noY = 0, noScale = 1;
+let isYesClickable = true;
+let typeTimeoutId = null;
+
+const fullText =
+`💌
+
+Hey Elyyy!
+
+I've been meaning to tell you this for quite some time now...
+
+I like you. Not just a little bit, but in way that I would love to get to know you more. In a way that whenever we interact, I feel somewhat recharged and better. Whenever we play, MLBB became something even more fun, to the point that I don't really mind losing, as long as I get to play with you. I'd love to know you more, even with the simplest details about you, like your favorite color, favorite genre of movies or series, even your favorite number of your fan HAHAHAHAHA. I'm not really good with expressing myself and with words either, but I really want to tell you what I feel towards you.
+
+I didn't know how to say this properly so I figured I'll just send you this program I made HAHAHAHA. I was scared of what'll happen, if it'll be awkward or not, or something like that. 
+
+I honestly can't keep this all to myself. I hope that my confession doesn't affect our friendship in a bad way. And, whatever your response is, I honestly just hope that this made you smile... 💙
+
+- 𝓙𝓱𝓮𝓷`;
+
+function showEnvelope() {
+  if (!isYesClickable) return;
+  isYesClickable = false;
+  
+  setTimeout(() => {
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('envelopeSection').classList.remove('hidden');
+    isYesClickable = true;
+  }, 600);
+}
+
+function openEnvelope() {
+  const env = document.getElementById('envelope');
+  env.classList.add('open');
+
+  setTimeout(() => {
+    document.getElementById('overlay').classList.add('show');
+    typeText();
+    createConfetti();
+  }, 900);
+}
+
+/* 💨 NO SHRINK + ESCAPE */
+function moveNo() {
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+
+  noScale -= 0.12;
+  if (noScale > 0.1) {
+    noX += (Math.random() - 0.5) * 120;
+    noY += (Math.random() - 0.5) * 120;
+
+    noBtn.style.transform = `translate(${noX}px,${noY}px) scale(${noScale})`;
+  } else {
+    noBtn.classList.add('escaping');
+    setTimeout(() => {
+      noBtn.style.pointerEvents = 'none';
+    }, 1200);
+  }
+
+  yesScale += 0.18;
+  yesBtn.style.transform = `scale(${yesScale})`;
+}
+
+/* ✍️ EMOTIONAL PACING - Stronger pauses for emphasis */
+function typeText() {
+  let i = 0;
+  const target = document.getElementById('typedText');
+  target.innerText = ''; // Clear previous text
+
+  function type() {
+    if (i < fullText.length) {
+      let speed = 40;
+      const char = fullText[i];
+      
+      // Sentence pauses
+      if (char === '.') speed = 400;
+      else if (char === '…') speed = 500;
+      else if (char === '\n') speed = 200;
+      else if (char == ',') speed = 350
+      // Emphasis on emotional moments
+      else if (fullText.substring(Math.max(0, i - 10), i).includes('like you')) speed = 50;
+      else if (fullText.substring(Math.max(0, i - 15), i).includes('reason I smile')) speed = 45;
+
+      target.innerText += char;
+      i++;
+      typeTimeoutId = setTimeout(type, speed);
+    }
+  }
+  type();
+}
+
+/* 🌌 BACKGROUND PARTICLES - Depth layers */
+const icons = ['💖','✨','🌸'];
+
+function spawnBG() {
+  const el = document.createElement('div');
+  
+  // Assign depth layer randomly
+  const rand = Math.random();
+  if (rand < 0.33) {
+    el.className = 'bg-particle slow';
+    el.style.animationDuration = (Math.random()*3+5) + "s";
+  } else if (rand < 0.66) {
+    el.className = 'bg-particle medium';
+    el.style.animationDuration = (Math.random()*2+4) + "s";
+  } else {
+    el.className = 'bg-particle fast';
+    el.style.animationDuration = (Math.random()*2+2.5) + "s";
+  }
+  
+  el.innerText = icons[Math.floor(Math.random()*icons.length)];
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.fontSize = (Math.random()*20+10) + "px";
+
+  document.body.appendChild(el);
+
+  setTimeout(() => el.remove(), 9000);
+}
+setInterval(spawnBG, 250);
+
+/* 🎊 CONFETTI */
+function createConfetti() {
+  const confettiIcons = ['🎉','💖','✨','🌸','💗'];
+  const duration = 3000;
+  const count = 50;
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.innerText = confettiIcons[Math.floor(Math.random() * confettiIcons.length)];
+      
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.top = '-30px';
+      confetti.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+      confetti.style.fontSize = (Math.random() * 20 + 16) + 'px';
+      
+      document.body.appendChild(confetti);
+      
+      setTimeout(() => confetti.remove(), 4500);
+    }, i * 30);
+  }
+}
+
+/* CLOSE LETTER */
+function closeLetter() {
+  // Clear any pending typing timeouts
+  if (typeTimeoutId !== null) {
+    clearTimeout(typeTimeoutId);
+    typeTimeoutId = null;
+  }
+  
+  const overlay = document.getElementById('overlay');
+  overlay.classList.remove('show');
+  
+  setTimeout(() => {
+    const envelope = document.getElementById('envelope');
+    envelope.classList.remove('open');
+    document.getElementById('envelopeSection').classList.add('hidden');
+    document.getElementById('home').classList.remove('hidden');
+    document.getElementById('typedText').innerText = '';
+    
+    // Reset button states
+    const noBtn = document.getElementById('noBtn');
+    noBtn.classList.remove('escaping');
+    noBtn.style.transform = '';
+    noBtn.style.opacity = '';
+    noBtn.style.pointerEvents = '';
+    noBtn.innerText = 'No 🙈';
+    noScale = 1;
+    noX = 0;
+    noY = 0;
+    
+    const yesBtn = document.getElementById('yesBtn');
+    yesBtn.style.transform = '';
+    yesScale = 1;
+  }, 500);
+}
+
+</script>
+
+</body>
+</html>
